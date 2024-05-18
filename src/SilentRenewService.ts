@@ -20,6 +20,7 @@ export class SilentRenewService {
         const logger = this._logger.create("start");
         if (!this._isStarted) {
             this._isStarted = true;
+            this._userManager.events.addAccessTokenExpired(this._tokenExpiring);
             this._userManager.events.addAccessTokenExpiring(this._tokenExpiring);
             this._retryTimer.addHandler(this._tokenExpiring);
 
@@ -39,6 +40,7 @@ export class SilentRenewService {
         if (this._isStarted) {
             this._retryTimer.cancel();
             this._retryTimer.removeHandler(this._tokenExpiring);
+            this._userManager.events.removeAccessTokenExpired(this._tokenExpiring);
             this._userManager.events.removeAccessTokenExpiring(this._tokenExpiring);
             this._isStarted = false;
         }
